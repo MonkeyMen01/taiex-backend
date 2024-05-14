@@ -1,6 +1,8 @@
 import {Sequelize} from "sequelize";
 import mariadb from 'mariadb';
 import dotenv from 'dotenv'
+import {taiexService} from "../service/taiexApiService.js";
+import {StockDay} from "../entitys/StockDay.js";
 
 dotenv.config()
 const dbName = process.env.DB_NAME
@@ -22,3 +24,5 @@ sequelize
     .catch((e) => {
         console.error("Connection Fail", e);
     });
+
+
