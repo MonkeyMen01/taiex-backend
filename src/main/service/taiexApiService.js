@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {HttpStatusCode} from "axios";
 import {StockDay} from "../entitys/StockDay.js";
 import {cleanDecimal, formatDate} from "../utils/functions.js";
 import {sequelize} from "../utils/dataSource.js";
@@ -16,7 +16,9 @@ export const taiexService = {
     },
     saveAll: async function (items) {
         const lastData = this.findLastOne()
-        if(formatDate(items.date) === lastData.date) return
+        if(formatDate(items.date) === lastData.date) {
+            return  {status:HttpStatusCode.NoContent,message:'Data already exists for the given date'}
+        }
         try {
             const result = await sequelize.transaction(async (t) => {
                 const createPromises = items.data.map(item => {
@@ -36,6 +38,7 @@ export const taiexService = {
                 })
                 return Promise.all(createPromises);
             })
+            return  {status:HttpStatusCode.Ok,message:'Data saved successful'}
         } catch (e) {
             console.log('save all error:', e)
             return e
